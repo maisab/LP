@@ -1,12 +1,13 @@
 module BinaryTree
     class Node
-        attr_accessor :caracter, :left, :right, :frequencia #get and set
+        attr_accessor :caracter, :left, :right, :frequencia, :peso #get and set
 
-        def initialize(caracter, left, right, frequencia)
+        def initialize(caracter, left, right, frequencia, peso)
             @caracter = caracter
             @left = left
             @right = right
             @frequencia = frequencia
+            @peso = peso
         end #def
     end #class
 
@@ -18,14 +19,16 @@ module BinaryTree
             @raiz = Node.new(c, nil, nil, 1) #frequencia = 1
         end #def inicializa
 
-        def insere(letra)
-                puts "Inserindo: " + letra
+        def insere_No(node)
+                puts "Inserindo frequencia: " + node.frequencia
+                puts "Inserindo caracter: " + node.caracter
+
                 no_atual = @raiz
 
                 while nil != no_atual
 
-                      if (letra < no_atual.caracter) && (no_atual.left == nil) #novo nó a esquerda
-                                no_atual.left = Node.new(letra, nil, nil, 1)
+                      if (node.peso < no_atual.peso) && (no_atual.left == nil) #novo nó a esquerda
+                                no_atual.left = Node.new(letra, nil, nil, 1,)
 
                         elsif  (letra > no_atual.caracter) && (no_atual.right == nil)
                                 no_atual.right = Node.new(letra, nil, nil, 1) #novo nó a direita
