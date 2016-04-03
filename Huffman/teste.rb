@@ -21,12 +21,13 @@ module Lista_Modulo
 
         def insere_node_lista(array_linha)
                 array_linha.each do | i |
-                        node = Node.new(i, nil, nil, 1, 1)
+                        node = Node.new(i, nil, nil, 1, 1, nil, nil)
                         #puts " ------------- Novo No ---------------"
                         verifica_lista(node)
                 end # end for each
 
                 ordena_lista #chama a função de ordenção
+
         end # def insere
 
         def verifica_lista(node)
@@ -83,7 +84,76 @@ module Lista_Modulo
             end #end for
         end#ordena_lista
 
+        def cria_arvore_unica
+
+                while $lista_nos.length > 1
+
+                        node0 = $lista_nos[0]
+                        node1 = $lista_nos[1]
+
+                        node0.bin = 0 # nó a esquerda
+                        node1.bin = 1 # nó a direita
+
+                        auxLista = []
+                        contListaNos = 0
+                        contAuxLista = 0
+
+                        novoNo = Node.new(nil, node0, node1, 0, node0.peso+node1.peso, nil, nil)
+
+                        $lista_nos.each do | i |
+                                if(contListaNos == 0 || contListaNos ==1)
+                                        contListaNos = contListaNos + 1
+                                 elsif
+                                        auxLista[contAuxLista] =$lista_nos[contListaNos]
+                                        contListaNos = contListaNos + 1
+                                        contAuxLista = contAuxLista + 1
+                                end #else
+                        end #for
+
+                        auxLista[contAuxLista] = novoNo #adiciona o novo nó
+
+        #                        puts auxLista.length
+
+                        $lista_nos = []
+                        cont = 0
+
+                        auxLista.each do | j | #volta os nós para a lista
+                                $lista_nos[cont] = auxLista[cont]
+                                cont = cont + 1
+                        end #for
+
+                        ordena_lista #ordena a lista novamente
+
+                end #while
+
+                $lista_nos[0].bin = 1 #raiz recebe 1
+
+        end #cria_arvore_unica
+
+
+        def encontra_caminho_caracter(node)
+                caminho = []
+
+                if(node != nil)
+
+                        if (node.caracter == nil)
+                                caminho.push(node.bin) #adiciono na lista
+                                pre_order(node.left)
+                                pre_order(node.right)
+                        elsif
+                                caminho.push(node.bin)
+                                node.caminho
+                                caminho.pop
+
+                        end #elsif
+
+                end #if
+
+        end#encontra_caminho_caracter
+
 end #Lista_Modulo
+
+
 
 class Principal
     include Lista_Modulo
@@ -91,9 +161,28 @@ end #class
 
 Principal.new.ler_arquivo("arquivo.txt")
 
-        $lista_nos.each do | i |
-                puts "Caracter , Frequencia"
-                puts i.caracter
-                puts i.frequencia
-                puts "  ------------------   "
-        end
+$lista_nos.each do | i |
+        puts "Caracter"
+        puts i.caracter
+
+        puts "Peso"
+        puts i.peso
+
+end #for
+
+ Principal.new.cria_arvore_unica
+
+
+
+$lista_nos.each do | i |
+        puts "Caracter"
+        puts i.caracter
+
+        puts "Peso"
+        puts i.peso
+end #for
+
+puts "------- Agora arvore ------------"
+
+Principal.new.pre_order($lista_nos[0])
+#Principal.new.monta_arvore
