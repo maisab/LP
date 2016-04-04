@@ -130,25 +130,27 @@ module Lista_Modulo
 
         end #cria_arvore_unica
 
-
+        $caminho = []
         def encontra_caminho_caracter(node)
-                caminho = []
 
                 if(node != nil)
+                        $caminho.push(node.bin) # adiciona no caminho
+                        puts "Adicionando no array"
+                        #puts $caminho.length
 
-                        if (node.caracter == nil)
-                                caminho.push(node.bin) #adiciono na lista
-                                pre_order(node.left)
-                                pre_order(node.right)
-                        elsif
-                                caminho.push(node.bin)
-                                node.caminho
-                                caminho.pop
+                        if (node.caracter != nil)
+                                node.caminho = $caminho.join("") #guarda o caminho como string
 
-                        end #elsif
+                                puts "Caminho caracter"
+                                puts node.caracter
+                                puts node.caminho
+                        end #if
+
+                        encontra_caminho_caracter(node.left)
+                        encontra_caminho_caracter(node.right)
+                        $caminho.pop #remove a ultima posição
 
                 end #if
-
         end#encontra_caminho_caracter
 
 end #Lista_Modulo
@@ -184,5 +186,7 @@ end #for
 
 puts "------- Agora arvore ------------"
 
+Principal.new.pre_order($lista_nos[0])
+Principal.new.encontra_caminho_caracter($lista_nos[0])
 Principal.new.pre_order($lista_nos[0])
 #Principal.new.monta_arvore

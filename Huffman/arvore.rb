@@ -29,19 +29,17 @@ module BinaryTree
     end#class
 
         def pre_order(node)
-                puts "--------- Chamou --------"
                 if(node != nil)
                         puts node.peso
                         if (node.caracter != nil)
                                 puts "Folha : "
                                 puts node.caracter
+                                puts "Caminho"
+                                puts node.caminho
 
                         end #if
-                        puts "bin : "
-                        puts node.bin
                         pre_order(node.left)
                         pre_order(node.right)
-                        puts "-------------"
                 end #if
         end #pre order
 
