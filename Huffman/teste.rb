@@ -7,9 +7,7 @@ module Lista_Modulo
         def ler_arquivo(nome)
                 File.open(nome, 'r') do | f1|
                         while line = f1.gets
-                                #puts line
                                 quebra_linha(line)
-
                         end #end while
                 end #end File
         end #def ler_arquivo
@@ -22,7 +20,6 @@ module Lista_Modulo
         def insere_node_lista(array_linha)
                 array_linha.each do | i |
                         node = Node.new(i, nil, nil, 1, 1, nil, nil)
-                        #puts " ------------- Novo No ---------------"
                         verifica_lista(node)
                 end # end for each
 
@@ -32,9 +29,6 @@ module Lista_Modulo
 
         def verifica_lista(node)
             if($lista_nos.length == 0) #inicializa a lista
-                    #puts "Caracter "
-                    #puts node.caracter
-                    #puts "------- Adicionou o primeiro --------"
                     $lista_nos[0] = node
             else
                     estaNaLista = 0
@@ -42,9 +36,6 @@ module Lista_Modulo
 
                     $lista_nos.each do | item|
                         if(item.caracter == node.caracter)  # Se ja existir o caracter na lista
-                                #puts " ---         Encontrou o caracter   na lista-----"
-                                #puts node.frequencia
-                               # puts node.caracter
                                 $lista_nos[index].frequencia = $lista_nos[index].frequencia + 1 #incrementa a frequencia
                                 $lista_nos[index].peso = $lista_nos[index].frequencia #peso igual a frequencia no inicio
                                 estaNaLista = 1 #flag se esta na lista
@@ -55,15 +46,12 @@ module Lista_Modulo
                     end #for
 
                     if(estaNaLista == 0)
-                            #puts "---------Adiciona na lista --------"
-                            #puts node.caracter
                             $lista_nos[$lista_nos.length] = node #adiciona uma posição na lista
                     end # if
             end #else
         end # def verifica
 
         def ordena_lista
-
             cont_i = 0
             cont_j = 0
 
@@ -84,10 +72,8 @@ module Lista_Modulo
             end #end for
         end#ordena_lista
 
-        def cria_arvore_unica
-
+        def monta_arvore
                 while $lista_nos.length > 1
-
                         node0 = $lista_nos[0]
                         node1 = $lista_nos[1]
 
@@ -112,8 +98,6 @@ module Lista_Modulo
 
                         auxLista[contAuxLista] = novoNo #adiciona o novo nó
 
-        #                        puts auxLista.length
-
                         $lista_nos = []
                         cont = 0
 
@@ -127,35 +111,8 @@ module Lista_Modulo
                 end #while
 
                 $lista_nos[0].bin = 1 #raiz recebe 1
-
         end #cria_arvore_unica
-
-        $caminho = []
-        def encontra_caminho_caracter(node)
-
-                if(node != nil)
-                        $caminho.push(node.bin) # adiciona no caminho
-                        puts "Adicionando no array"
-                        #puts $caminho.length
-
-                        if (node.caracter != nil)
-                                node.caminho = $caminho.join("") #guarda o caminho como string
-
-                                puts "Caminho caracter"
-                                puts node.caracter
-                                puts node.caminho
-                        end #if
-
-                        encontra_caminho_caracter(node.left)
-                        encontra_caminho_caracter(node.right)
-                        $caminho.pop #remove a ultima posição
-
-                end #if
-        end#encontra_caminho_caracter
-
 end #Lista_Modulo
-
-
 
 class Principal
     include Lista_Modulo
@@ -163,30 +120,30 @@ end #class
 
 Principal.new.ler_arquivo("arquivo.txt")
 
-$lista_nos.each do | i |
-        puts "Caracter"
-        puts i.caracter
+#$lista_nos.each do | i |
+#         puts "Caracter"
+#         puts i.caracter
 
-        puts "Peso"
-        puts i.peso
+#        puts "Peso"
+#        puts i.peso
 
-end #for
+#end #for
 
- Principal.new.cria_arvore_unica
+ Principal.new.monta_arvore
 
+#$lista_nos.each do | i |
+#       puts "Caracter"
+#       puts i.caracter
 
+#        puts "Peso"
+#       puts i.peso
+#end #for
 
-$lista_nos.each do | i |
-        puts "Caracter"
-        puts i.caracter
-
-        puts "Peso"
-        puts i.peso
-end #for
-
-puts "------- Agora arvore ------------"
+#puts "------- Agora arvore ------------"
 
 Principal.new.pre_order($lista_nos[0])
 Principal.new.encontra_caminho_caracter($lista_nos[0])
 Principal.new.pre_order($lista_nos[0])
+Principal.new.arvore_parentizada($lista_nos[0])
+puts $arvoreLinha.join("")
 #Principal.new.monta_arvore

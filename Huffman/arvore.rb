@@ -59,7 +59,6 @@ module BinaryTree
         end #pos order
 
         def in_order(node)
-
                 if(node != nil)
                         in_order(node.left)
                         puts node.peso
@@ -70,5 +69,43 @@ module BinaryTree
                         in_order(node.right)
                 end #if
         end #in order
+
+        $caminho = []
+        def encontra_caminho_caracter(node)
+                if(node != nil)
+                        $caminho.push(node.bin) # adiciona no caminho
+                        #puts "Adicionando no array"
+                        #puts $caminho.length
+                        if (node.caracter != nil)
+                                node.caminho = $caminho.join("") #guarda o caminho como string
+                          #      puts "Caminho caracter"
+                            #    puts node.caracter
+                             #   puts node.caminho
+                        end #if
+
+                        encontra_caminho_caracter(node.left)
+                        encontra_caminho_caracter(node.right)
+                        $caminho.pop #remove a ultima posição
+                end #if
+        end#encontra_caminho_caracter
+
+        $arvoreLinha = []
+        def arvore_parentizada(node)
+                if(node != nil)
+                        $arvoreLinha.push("(")
+                        $arvoreLinha.push(node.peso)
+                        #puts "("
+                        if (node.caracter != nil)
+                                $arvoreLinha.push(node.caracter)
+                                #puts node.caracter
+                        end #if
+                        arvore_parentizada(node.left)
+                        arvore_parentizada(node.right)
+                        $arvoreLinha.push(")")
+                        #puts ")"
+
+                end #if
+        end#arvore_arquivo
+
 
 end #module
