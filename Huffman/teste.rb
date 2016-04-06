@@ -1,10 +1,11 @@
-load 'arvore.rb' #importa o arquivo
+load "arvore.rb" #importa o arquivo
+load "decode.rb"
 
 module Lista_Modulo
        include BinaryTree
        $lista_nos = []
 
-        def ler_arquivo(nome)
+        def ler_arquivo_codifica(nome)
                 File.open(nome, 'r') do | f1|
                         while line = f1.gets
                                 quebra_linha(line)
@@ -19,7 +20,7 @@ module Lista_Modulo
 
         def insere_node_lista(array_linha)
                 array_linha.each do | i |
-                        node = Node.new(i, nil, nil, 1, 1, nil, nil)
+                        node = Node.new(i, nil, nil, 1, nil, nil)
                         verifica_lista(node)
                 end # end for each
 
@@ -36,8 +37,7 @@ module Lista_Modulo
 
                     $lista_nos.each do | item|
                         if(item.caracter == node.caracter)  # Se ja existir o caracter na lista
-                                $lista_nos[index].frequencia = $lista_nos[index].frequencia + 1 #incrementa a frequencia
-                                $lista_nos[index].peso = $lista_nos[index].frequencia #peso igual a frequencia no inicio
+                                $lista_nos[index].peso = $lista_nos[index].peso + 1 #incrementa a frequencia
                                 estaNaLista = 1 #flag se esta na lista
 
                         end #if
@@ -84,7 +84,7 @@ module Lista_Modulo
                         contListaNos = 0
                         contAuxLista = 0
 
-                        novoNo = Node.new(nil, node0, node1, 0, node0.peso+node1.peso, nil, nil)
+                        novoNo = Node.new(nil, node0, node1, node0.peso+node1.peso, nil, nil)
 
                         $lista_nos.each do | i |
                                 if(contListaNos == 0 || contListaNos ==1)
@@ -112,38 +112,110 @@ module Lista_Modulo
 
                 $lista_nos[0].bin = 1 #raiz recebe 1
         end #cria_arvore_unica
+
+       $arvore_decode = nil
+        def decodifica(cabecalho)
+                linha = cabecalho.split("")
+                cont = 0
+                caminho_atual = []
+                puts linha.length
+                while(linha.length > cont) # para todo o cabeçalho
+                        while((linha[cont] == '0') or (linha[cont] =='1' )) #encontra uma letra
+                                caminho_atual.push(linha[cont])
+                                cont = cont + 1
+                               # puts "adicionando caminho"
+                        end#while
+
+                        caminho_atual.push(linha[cont])
+                         cont = cont + 1
+
+                        #puts caminho_atual.join("")
+                        insere_arvore_decode(caminho_atual) # insere na arvore
+
+                        caminho_atual = [] #nova palavra
+                end #while
+        end #decodifica
+
+        def insere_arvore_decode(caminho_atual)
+
+            contador = 0
+
+            if($arvore_decode == nil)
+                    $arvore_decode = Node.new(nil, nil, nil, 0, 1, nil)
+                    contador = contador + 1
+                    #puts "Inseriu raiz"
+            else
+                    contador = contador + 1
+                    #puts "Passou raiz"
+            end # else
+
+            node_atual = $arvore_decode
+
+            while( caminho_atual.length  > contador)
+                    #puts "Contador"
+                    #puts contador
+                    #puts caminho_atual[contador]
+
+                    if(caminho_atual[contador] == "0" and node_atual.left == nil)
+                            node_atual.left = Node.new(nil, nil, nil, 0, 0, nil)
+                            contador = contador + 1
+                            node_atual = node_atual.left
+                            #puts "Inseriu 0"
+
+                    elsif (caminho_atual[contador] == "0" and node_atual.left != nil)
+                            contador = contador + 1
+                            node_atual = node_atual.left
+                            #puts "Passou 0"
+
+                    elsif (caminho_atual[contador] == "1" and node_atual.right == nil)
+                            node_atual.right = Node.new(nil, nil, nil, 0, 1, nil)
+                            contador = contador + 1
+                            node_atual = node_atual.right
+                            #puts "Inseriu 1"
+
+                    elsif (caminho_atual[contador] == "1" and node_atual.right != nil)
+                            contador = contador + 1
+                            node_atual = node_atual.right
+                            #puts "Passou 1"
+
+                    elsif (node_atual.left == nil)
+                            node_atual.caracter = caminho_atual[contador]
+                            #node_atual.left = Node.new(caminho_atual[contador], nil, nil, 0, 0, nil)
+                            contador = contador + 1
+
+                    else
+                            node_atual.caracter = caminho_atual[contador]
+                            #node_atual.right = Node.new(caminho_atual[contador] ,nil, nil, 0, 1, nil)
+                            contador = contador + 1
+
+                    end # else
+
+            end #while
+        end #insere_arvore_decode
+
 end #Lista_Modulo
 
 class Principal
     include Lista_Modulo
+    include Decodificador
 end #class
 
-Principal.new.ler_arquivo("arquivo.txt")
+Principal.new.ler_arquivo_codifica("arquivo.txt")
 
-#$lista_nos.each do | i |
-#         puts "Caracter"
-#         puts i.caracter
+Principal.new.monta_arvore
 
-#        puts "Peso"
-#        puts i.peso
 
-#end #for
-
- Principal.new.monta_arvore
-
-#$lista_nos.each do | i |
-#       puts "Caracter"
-#       puts i.caracter
-
-#        puts "Peso"
-#       puts i.peso
-#end #for
-
-#puts "------- Agora arvore ------------"
-
-Principal.new.pre_order($lista_nos[0])
+#Principal.new.pre_order($lista_nos[0])
 Principal.new.encontra_caminho_caracter($lista_nos[0])
 Principal.new.pre_order($lista_nos[0])
-Principal.new.arvore_parentizada($lista_nos[0])
-puts $arvoreLinha.join("")
+#Principal.new.arvore_parentizada($lista_nos[0])
+#puts $arvoreLinha.join("")
+Principal.new.cria_cabecalho($lista_nos[0])
+puts $cabecalho.join("")
+
+puts "--------------decode ----------------"
+Principal.new.decodifica($cabecalho.join(""))
+
+Principal.new.pre_order($arvore_decode)
+
 #Principal.new.monta_arvore
