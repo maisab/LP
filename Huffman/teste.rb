@@ -5,7 +5,7 @@ module Lista_Modulo
        include BinaryTree
        $lista_nos = []
 
-        def ler_arquivo_codifica(nome)
+        def ler_arquivo(nome)
                 File.open(nome, 'r') do | f1|
                         while line = f1.gets
                                 quebra_linha(line)
@@ -112,95 +112,44 @@ module Lista_Modulo
 
                 $lista_nos[0].bin = 1 #raiz recebe 1
         end #cria_arvore_unica
-
-       $arvore_decode = nil
-        def decodifica(cabecalho)
-                linha = cabecalho.split("")
-                cont = 0
-                caminho_atual = []
-                puts linha.length
-                while(linha.length > cont) # para todo o cabeçalho
-                        while((linha[cont] == '0') or (linha[cont] =='1' )) #encontra uma letra
-                                caminho_atual.push(linha[cont])
-                                cont = cont + 1
-                               # puts "adicionando caminho"
-                        end#while
-
-                        caminho_atual.push(linha[cont])
-                         cont = cont + 1
-
-                        #puts caminho_atual.join("")
-                        insere_arvore_decode(caminho_atual) # insere na arvore
-
-                        caminho_atual = [] #nova palavra
-                end #while
-        end #decodifica
-
-        def insere_arvore_decode(caminho_atual)
-
-            contador = 0
-
-            if($arvore_decode == nil)
-                    $arvore_decode = Node.new(nil, nil, nil, 0, 1, nil)
-                    contador = contador + 1
-                    #puts "Inseriu raiz"
-            else
-                    contador = contador + 1
-                    #puts "Passou raiz"
-            end # else
-
-            node_atual = $arvore_decode
-
-            while( caminho_atual.length  > contador)
-                    #puts "Contador"
-                    #puts contador
-                    #puts caminho_atual[contador]
-
-                    if(caminho_atual[contador] == "0" and node_atual.left == nil)
-                            node_atual.left = Node.new(nil, nil, nil, 0, 0, nil)
-                            contador = contador + 1
-                            node_atual = node_atual.left
-                            #puts "Inseriu 0"
-
-                    elsif (caminho_atual[contador] == "0" and node_atual.left != nil)
-                            contador = contador + 1
-                            node_atual = node_atual.left
-                            #puts "Passou 0"
-
-                    elsif (caminho_atual[contador] == "1" and node_atual.right == nil)
-                            node_atual.right = Node.new(nil, nil, nil, 0, 1, nil)
-                            contador = contador + 1
-                            node_atual = node_atual.right
-                            #puts "Inseriu 1"
-
-                    elsif (caminho_atual[contador] == "1" and node_atual.right != nil)
-                            contador = contador + 1
-                            node_atual = node_atual.right
-                            #puts "Passou 1"
-
-                    elsif (node_atual.left == nil)
-                            node_atual.caracter = caminho_atual[contador]
-                            #node_atual.left = Node.new(caminho_atual[contador], nil, nil, 0, 0, nil)
-                            contador = contador + 1
-
-                    else
-                            node_atual.caracter = caminho_atual[contador]
-                            #node_atual.right = Node.new(caminho_atual[contador] ,nil, nil, 0, 1, nil)
-                            contador = contador + 1
-
-                    end # else
-
-            end #while
-        end #insere_arvore_decode
-
 end #Lista_Modulo
 
+
+module Codificador
+        include Lista_Modulo
+
+        $codificadas = []
+        def codificar_arquivo(nome)
+                File.open(nome, 'r') do | f1|
+                        while line = f1.gets
+                                line.split("").each do | i |
+                                        encontra_caminho_arvore($lista_nos[0],i)
+                                end # for
+                        end #end while
+                end #end File
+        end #def ler_arquivo
+
+        def encontra_caminho_arvore(node, caracter)
+                if(node != nil)
+                       if (node.caracter != nil)
+                                if(node.caracter == caracter)
+                                        $codificadas.push(node.caminho) #adiciona a codificacao
+                                end # if
+                        end #if
+
+                        encontra_caminho_arvore(node.left, caracter)
+                        encontra_caminho_arvore(node.right, caracter)
+                end #if
+        end #encontra_caminho_arvore
+end#module
+
 class Principal
+    include Codificador
     include Lista_Modulo
     include Decodificador
 end #class
 
-Principal.new.ler_arquivo_codifica("arquivo.txt")
+Principal.new.ler_arquivo("arquivo.txt")
 
 Principal.new.monta_arvore
 
@@ -218,4 +167,5 @@ Principal.new.decodifica($cabecalho.join(""))
 
 Principal.new.pre_order($arvore_decode)
 
-#Principal.new.monta_arvore
+Principal.new.codificar_arquivo("arquivo.txt")
+puts $codificadas.join("")

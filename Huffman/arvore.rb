@@ -26,13 +26,13 @@ module BinaryTree
 
         def pre_order(node)
                 if(node != nil)
-                       #puts "chamou"
                         puts node.bin
                         if (node.caracter != nil)
                                 puts "Folha : "
                                 puts node.caracter
-                               # puts "Caminho"
-                                puts node.caminho
+                                if(node.caminho != nil)
+                                        puts node.caminho
+                                end #if
                         end #if
 
                         pre_order(node.left)
@@ -45,6 +45,7 @@ module BinaryTree
                 if(node != nil)
                         $caminho.push(node.bin) # adiciona no caminho
                         if (node.caracter != nil)
+
                                 node.caminho = $caminho.join("") #guarda o caminho como string
                         end #if
 

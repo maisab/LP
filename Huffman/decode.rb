@@ -3,91 +3,77 @@ load 'arvore.rb'
 module Decodificador
         include BinaryTree
 
-        def  arvore_decode(linha)
-                cabecalho = linha.split("")
-                puts cabecalho.length
+        $arvore_decode = nil
+        def decodifica(cabecalho)
+                linha = cabecalho.split("")
+                cont = 0
+                caminho_atual = []
+                while(linha.length > cont) # para todo o cabeçalho
+                        while((linha[cont] == '0') or (linha[cont] =='1' )) #encontra uma letra
+                                caminho_atual.push(linha[cont])
+                                cont = cont + 1
+                        end#while
 
-                roots = Node.new(nil, nil, nil, 0, 1, nil)
-                node = roots
-                cont = 1
-                puts roots.bin
-                puts "----------------salvou raiz-------"
+                        caminho_atual.push(linha[cont])
+                        cont = cont + 1
 
-                while( cabecalho. length > cont)
-                        if(node != nil)
-                               if( (cabecalho[cont] == '0') and (node.left == nil) )
-                                        puts "Inserindo esquerda"
-                                        puts cabecalho[cont]
-                                        puts "contador"
-                                        puts cont
-                                        puts "-----------------------------------------------------------"
+                        insere_arvore_decode(caminho_atual) # insere na arvore
 
-                                        node.left = Node.new(nil, nil, nil, 0, 0, nil)
-                                        node = node.left
-                                        cont = cont + 1
+                        caminho_atual = [] #nova palavra
+                end #while
+        end #decodifica
 
-                                elsif ( (cabecalho[cont] == '0') and (node.left != nil ))
-                                        puts "Passou pela esquerda"
-                                        puts cabecalho[cont]
-                                        puts "contador"
-                                        puts cont
-                                        puts "---------------------"
-                                        node = node.left
-                                        cont = cont + 1
+        def insere_arvore_decode(caminho_atual)
 
-                                elsif ((cabecalho[cont] == '1') and (node.right == nil))
-                                        puts "Inserindo direita"
-                                        puts cabecalho[cont]
-                                        puts "contador"
-                                        puts cont
-                                        puts "---------------------"
+                contador = 0
 
-                                        node.right = Node.new(nil, nil, nil, 0, 1, nil)
-                                        node = node.right
-                                        cont = cont + 1
+                if($arvore_decode == nil)
+                        $arvore_decode = Node.new(nil, nil, nil, 0, 1, nil)
+                        contador = contador + 1
 
-                                elsif ( (cabecalho[cont] == '1') and (node.right != nil))
-                                        puts "Passou direita"
-                                        puts cabecalho[cont]
-                                        puts "contador"
-                                        puts cont
-                                        puts "---------------------"
-                                        node = node.right
-                                        cont = cont + 1
+                else
+                        contador = contador + 1
 
-                               elsif (node.left == nil)
-                                        puts "No folha a esquerda"
-                                        puts cabecalho[cont]
-                                        node.left = Node.new(cabecalho[cont], nil, nil, 0, 0, nil)
-                                        node = roots
-                                        puts "contador"
-                                        puts cont
-                                        cont = cont + 2
-                                        puts "----------------------------------------------"
+                end # else
 
-                               else
-                                        puts "No folha a direita"
-                                        puts cabecalho[cont]
-                                        node.right = Node.new(cabecalho[cont], nil, nil, 0, 1, nil)
-                                        puts "contador"
-                                        puts cont
-                                        node = roots
-                                        cont = cont + 2
-                                        puts"----------"
+                node_atual = $arvore_decode
 
-                                end #else
-                          end #if
-                end#while
+                while( caminho_atual.length  > contador)
+                        if(caminho_atual[contador] == "0" and node_atual.left == nil)
+                                node_atual.left = Node.new(nil, nil, nil, 0, 0, nil)
+                                contador = contador + 1
+                                node_atual = node_atual.left
+                                #puts "Inseriu 0"
 
-                pre_order(roots)
+                        elsif (caminho_atual[contador] == "0" and node_atual.left != nil)
+                                contador = contador + 1
+                                node_atual = node_atual.left
+                                #puts "Passou 0"
 
-                $arvore = roots
-        end # arvore_decode
+                        elsif (caminho_atual[contador] == "1" and node_atual.right == nil)
+                                node_atual.right = Node.new(nil, nil, nil, 0, 1, nil)
+                                contador = contador + 1
+                                node_atual = node_atual.right
+                                #puts "Inseriu 1"
 
-        def decodifica_frase(frase)
-                linha = frase.split("")
+                        elsif (caminho_atual[contador] == "1" and node_atual.right != nil)
+                                contador = contador + 1
+                                node_atual = node_atual.right
+                                #puts "Passou 1"
 
-        end#decodifica_frase
+                        elsif (node_atual.left == nil)
+                                node_atual.caracter = caminho_atual[contador]
+                                #node_atual.left = Node.new(caminho_atual[contador], nil, nil, 0, 0, nil)
+                                contador = contador + 1
+
+                        else
+                                node_atual.caracter = caminho_atual[contador]
+                                #node_atual.right = Node.new(caminho_atual[contador] ,nil, nil, 0, 1, nil)
+                                contador = contador + 1
+
+                        end # else
+                end #while
+        end #insere_arvore_decode
 
 
 end#decodificador
